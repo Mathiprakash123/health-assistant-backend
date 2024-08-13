@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "doctor")
+@Table(name = "trainer")
 public class TrainerEntity {
 
 	@Id
@@ -17,7 +17,6 @@ public class TrainerEntity {
 	private String email;
 	private String password;
 	private String gender;
-	private String Specialization;
 	public int getId() {
 		return id;
 	}
@@ -48,10 +47,5 @@ public class TrainerEntity {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public String getSpecialization() {
-		return Specialization;
-	}
-	public void setSpecialization(String specialization) {
-		Specialization = specialization;
-	}
+	
 }
