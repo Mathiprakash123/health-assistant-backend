@@ -24,5 +24,5 @@ public interface UserRepository extends JpaRepository<UserRegister, Integer> {
 
     // Use List<Long> if IDs are Long
     List<UserRegister> findAllById(Iterable<Integer> ids);
-
+    Optional<UserRegister> findById(int id);
 }

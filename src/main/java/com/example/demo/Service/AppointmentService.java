@@ -38,25 +38,17 @@ public class AppointmentService {
     public List<UserDTO> getPatientsByDoctorId(int doctorId) {
         List<Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
 
+        // Extract user IDs from the appointments
         List<Integer> userIds = appointments.stream()
-                                        .map(Appointment::getUserId)
-                                        .distinct()
-                                        .collect(Collectors.toList());
+                                         .map(Appointment::getUserId)
+                                         .distinct()
+                                         .collect(Collectors.toList());
 
-        List<UserDTO> userDTOs = new ArrayList<>();
-
-        for (int userId : userIds) {
-            Optional<UserRegister> optionalUser = userRepository.findById(userId);
-            if (optionalUser.isPresent()) {
-                UserRegister user = optionalUser.get();
-                UserDTO dto = new UserDTO();
-                dto.setId(user.getId());
-                dto.setName(user.getFirstname());
-                userDTOs.add(dto);
-            }
-        }
-
-        return userDTOs;
+        // Fetch user details and convert them to UserDTO
+        return userIds.stream()
+                      .map(this::getUserDetails)
+                      .filter(userDTO -> userDTO != null) // Remove any null entries
+                      .collect(Collectors.toList());
     }
 
     public Appointment findById(Integer id) {
@@ -99,6 +91,21 @@ public class AppointmentService {
         } catch (DateTimeParseException e) {
             e.printStackTrace(); // Log the exception
             return null; // Or handle it as needed
+        }
+    }
+
+    public UserDTO getUserDetails(int userId) {
+        Optional<UserRegister> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            UserRegister user = optionalUser.get();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setName(user.getFirstname());
+            // Set other properties if needed
+            return userDTO;
+        } else {
+            // Handle user not found case
+            return null; // Or throw a custom exception
         }
     }
 }

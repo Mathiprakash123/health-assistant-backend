@@ -2,6 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.Repo.DoctorRepo;
 import com.example.demo.Repo.TrainerRepo;
+import com.example.demo.Service.AppointmentService;
 import com.example.demo.Service.UserService;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.modal.DoctorEntity;
@@ -21,11 +22,16 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private DoctorRepo doctorRepository;
-    
+
     @Autowired
     private TrainerRepo trainerRepo;
+
+    @Autowired
+    private AppointmentService appointmentService;
+
     @GetMapping("/viewall")
     public List<UserRegister> view() {
         return userService.viewAllInfo();
@@ -82,37 +88,34 @@ public class UserController {
         return ResponseEntity.ok(userService.updateDoctor(updatedDoctor));
     }
 
-   
-
     @GetMapping("/view_alldoctor")
     public List<DoctorEntity> getAllDoctors() {
         return doctorRepository.findAll();
     }
-    
-    
-    
-    
-    @GetMapping("view_dr_byid/{id}")
-    public Optional<DoctorEntity> getDoctor(@PathVariable Long id) {
-        return doctorRepository.findById(id);
+
+    @GetMapping("/view_dr_byid/{id}")
+    public ResponseEntity<DoctorEntity> getDoctor(@PathVariable Long id) {
+        return doctorRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    
-    
-    
-//    
-//    @GetMapping("/{userId}")
-//    public ResponseEntity<UserDTO> getUser(@PathVariable int userId) {
-//        UserDTO userDTO = userService.getUserById(userId);
-//        return ResponseEntity.ok(userDTO);
-//    }
-//    
-    
-    
-    
-    
-    
-    
+    // New endpoint to get user details by doctor ID
+    @GetMapping("/users/by-doctor/{doctorId}")
+    public ResponseEntity<List<UserDTO>> getUsersByDoctorId(@PathVariable int doctorId) {
+        try {
+            List<UserDTO> userDTOs = appointmentService.getPatientsByDoctorId(doctorId);
+            if (userDTOs != null && !userDTOs.isEmpty()) {
+                return ResponseEntity.ok(userDTOs);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     // Trainer endpoints
     @PostMapping("/trainer_register")
     public ResponseEntity<String> trainerRegister(@RequestBody TrainerEntity trRegisterInfo) {
@@ -143,10 +146,7 @@ public class UserController {
     public ResponseEntity<String> updateTrainer(@RequestBody TrainerEntity updatedTrainer) {
         return ResponseEntity.ok(userService.updateTrainer(updatedTrainer));
     }
-//    @GetMapping("/view_alldoctor")
-//    public List<TrainerEntity> getAllTrainers() {
-//        return trainerRepo.findAll();
-//    }
+
     // Response class
     public static class LoginResponse {
         private String message;
