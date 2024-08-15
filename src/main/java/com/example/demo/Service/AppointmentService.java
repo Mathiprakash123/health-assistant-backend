@@ -29,7 +29,7 @@ public class AppointmentService {
     private UserRepository userRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public void save(Appointment appointment) {
         appointmentRepository.save(appointment);
@@ -37,17 +37,13 @@ public class AppointmentService {
 
     public List<UserDTO> getPatientsByDoctorId(int doctorId) {
         List<Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
-
-        // Extract user IDs from the appointments
         List<Integer> userIds = appointments.stream()
-                                         .map(Appointment::getUserId)
-                                         .distinct()
-                                         .collect(Collectors.toList());
-
-        // Fetch user details and convert them to UserDTO
+                                            .map(Appointment::getUserId)
+                                            .distinct()
+                                            .collect(Collectors.toList());
         return userIds.stream()
                       .map(this::getUserDetails)
-                      .filter(userDTO -> userDTO != null) // Remove any null entries
+                      .filter(userDTO -> userDTO != null)
                       .collect(Collectors.toList());
     }
 
@@ -57,9 +53,6 @@ public class AppointmentService {
 
     public List<AppointmentDTO> getAppointmentsByDoctorId(int doctorId) {
         List<Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
-        if (appointments == null) {
-            appointments = new ArrayList<>();
-        }
         return appointments.stream()
                            .map(this::convertToDTO)
                            .collect(Collectors.toList());
@@ -68,7 +61,6 @@ public class AppointmentService {
     private AppointmentDTO convertToDTO(Appointment appointment) {
         LocalDate date = parseDate(appointment.getDate());
         LocalTime time = parseTime(appointment.getTime());
-
         return new AppointmentDTO(appointment.getId(), 
                                   appointment.getUserId(), 
                                   appointment.getDoctorId(), 
@@ -80,8 +72,8 @@ public class AppointmentService {
         try {
             return LocalDate.parse(dateString, DATE_FORMATTER);
         } catch (DateTimeParseException e) {
-            e.printStackTrace(); // Log the exception
-            return null; // Or handle it as needed
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -89,8 +81,8 @@ public class AppointmentService {
         try {
             return LocalTime.parse(timeString, TIME_FORMATTER);
         } catch (DateTimeParseException e) {
-            e.printStackTrace(); // Log the exception
-            return null; // Or handle it as needed
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -101,11 +93,9 @@ public class AppointmentService {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setName(user.getFirstname());
-            // Set other properties if needed
             return userDTO;
         } else {
-            // Handle user not found case
-            return null; // Or throw a custom exception
+            return null;
         }
     }
 }

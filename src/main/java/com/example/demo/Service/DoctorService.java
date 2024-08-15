@@ -12,8 +12,10 @@ public class DoctorService {
 	@Autowired
 	private DoctorRepo doctorRepository;
 
-	public DoctorEntity findById(int i) {
-		  return doctorRepository.findById(i).orElse(null);
-	}
-
+	// public DoctorEntity findById(int i) {
+	// 	  return doctorRepository.findById(i).orElse(null);
+	// }
+	public DoctorEntity checkDoctor(String email, String password) {
+        return doctorRepository.findByEmailAndPassword(email, password);
+    }
 }

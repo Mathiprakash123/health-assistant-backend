@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -70,11 +69,16 @@ public class UserController {
 
     @PostMapping("/doctor_login")
     public ResponseEntity<LoginResponse> drLogin(@RequestBody DoctorEntity loginInfo) {
-        String result = userService.checkDoctor(loginInfo.getEmail(), loginInfo.getPassword());
-        if ("Login successful".equals(result)) {
-            return ResponseEntity.ok(new LoginResponse("Login successful", loginInfo.getEmail()));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Login failed", null));
+        try {
+            DoctorEntity doctor = userService.checkDoctor(loginInfo.getEmail(), loginInfo.getPassword());
+            if (doctor != null) {
+                return ResponseEntity.ok(new LoginResponse("Login successful", loginInfo.getEmail(), doctor.getId()));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Login failed", null));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponse("An error occurred", null));
         }
     }
 
@@ -151,10 +155,18 @@ public class UserController {
     public static class LoginResponse {
         private String message;
         private String email;
+        private Integer doctorId; // Added doctorId field
+
+        public LoginResponse(String message, String email, Integer doctorId) {
+            this.message = message;
+            this.email = email;
+            this.doctorId = doctorId;
+        }
 
         public LoginResponse(String message, String email) {
             this.message = message;
             this.email = email;
+            this.doctorId = null; // Default value for doctorId
         }
 
         public String getMessage() {
@@ -171,6 +183,14 @@ public class UserController {
 
         public void setEmail(String email) {
             this.email = email;
+        }
+
+        public Integer getDoctorId() {
+            return doctorId;
+        }
+
+        public void setDoctorId(Integer doctorId) {
+            this.doctorId = doctorId;
         }
     }
 }

@@ -12,4 +12,6 @@ public interface DoctorRepo  extends JpaRepository<DoctorEntity, Integer>{
 
 	Optional<DoctorEntity> findById(Long id);
 
+    DoctorEntity findByEmailAndPassword(String email, String password);
+
 }

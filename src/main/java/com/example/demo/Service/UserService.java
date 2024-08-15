@@ -108,12 +108,12 @@ public class UserService {
         return trainerRepo.findTrainersByEmail(email);
     }
 
-    public String checkDoctor(String email, String password) {
-        DoctorEntity doctor = doctorRepo.findAllByEmail(email);
+    public DoctorEntity checkDoctor(String email, String password) {
+        DoctorEntity doctor = doctorRepo.findByEmailAndPassword(email, password);
         if (doctor != null && doctor.getPassword().equals(password)) {
-            return "Login successful";
+            return doctor;
         }
-        return "Login failed";
+        return null; // Return null if login fails
     }
 
     public String checkTrainer(String email, String password) {
@@ -168,6 +168,11 @@ public class UserService {
     
     public Optional<UserRegister> getUserById(int userId) {
         return userRepository.findById(userId);
+    }
+
+    public DoctorEntity authenticateDoctor(String email, String password) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'authenticateDoctor'");
     }
     
     

@@ -21,41 +21,54 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
     @PostMapping("/post")
-    public ResponseEntity<String> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+    public ResponseEntity<ResponseMessage> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         try {
-            // Convert AppointmentDTO to Appointment entity
             Appointment appointment = new Appointment();
             appointment.setUserId(appointmentDTO.getUserId());
             appointment.setDoctorId(appointmentDTO.getDoctorId());
-            
-            // Convert date and time to string in the format expected by your Appointment entity
-            String dateStr = appointmentDTO.getDate().toString();
-            String timeStr = appointmentDTO.getTime().toString();
-            
-            appointment.setDate(dateStr);
-            appointment.setTime(timeStr);
+            appointment.setDate(appointmentDTO.getDate().toString());
+            appointment.setTime(appointmentDTO.getTime().toString());
 
             appointmentService.save(appointment);
-            return ResponseEntity.ok("Appointment created successfully");
+
+            // Return a JSON response
+            return ResponseEntity.ok(new ResponseMessage("Appointment created successfully"));
         } catch (Exception e) {
-            // Log the error and return a generic message
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the appointment.");
+            // Return a JSON error response
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseMessage("An error occurred while creating the appointment."));
         }
     }
 
+    // Define a simple response class to return JSON responses
+    public static class ResponseMessage {
+        private String message;
+
+        public ResponseMessage(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDTO> getAppointment(@PathVariable int id) {
         try {
             Appointment appointment = appointmentService.findById(id);
             if (appointment != null) {
-                // Convert Appointment to AppointmentDTO
                 AppointmentDTO appointmentDTO = new AppointmentDTO(
                     appointment.getId(),
                     appointment.getUserId(),
                     appointment.getDoctorId(),
-                    LocalDate.parse(appointment.getDate()), // Convert string to LocalDate
-                    LocalTime.parse(appointment.getTime())  // Convert string to LocalTime
+                    LocalDate.parse(appointment.getDate()),
+                    LocalTime.parse(appointment.getTime())
                 );
                 return ResponseEntity.ok(appointmentDTO);
             } else {
