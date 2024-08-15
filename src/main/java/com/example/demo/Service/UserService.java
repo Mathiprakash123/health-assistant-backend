@@ -3,6 +3,7 @@ package com.example.demo.Service;
 import com.example.demo.Repo.DoctorRepo;
 import com.example.demo.Repo.TrainerRepo;
 import com.example.demo.Repo.UserRepository;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.modal.DoctorEntity;
 import com.example.demo.modal.TrainerEntity;
 import com.example.demo.modal.UserRegister;
@@ -10,18 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     @Autowired
-    private UserRepository repo;
+    private UserRepository userRepository;
 
     @Autowired
-    private DoctorRepo dr_repo;
+    private DoctorRepo doctorRepo;
 
     @Autowired
-    private TrainerRepo tr_repo;
+    private TrainerRepo trainerRepo;
 
     public String addUser(UserRegister userInfo) {
         UserRegister user = new UserRegister();
@@ -32,16 +35,16 @@ public class UserService {
         user.setHeight(userInfo.getHeight());
         user.setWeight(userInfo.getWeight());
 
-        repo.save(user);
+        userRepository.save(user);
         return "Registered";
     }
 
     public List<UserRegister> viewAllInfo() {
-        return repo.findAll();
+        return userRepository.findAll();
     }
 
     public String checkUser(String email, String password) {
-        UserRegister user = repo.findAllByEmail(email);
+        UserRegister user = userRepository.findAllByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             return "Login successful";
         }
@@ -49,7 +52,7 @@ public class UserService {
     }
 
     public UserRegister getUserProfileByEmail(String email) {
-        return repo.findAllByEmail(email);
+        return userRepository.findAllByEmail(email);
     }
 
     public String addDoctor(DoctorEntity drregisterInfo) {
@@ -59,56 +62,55 @@ public class UserService {
         doctor.setEmail(drregisterInfo.getEmail());
         doctor.setGender(drregisterInfo.getGender());
         doctor.setSpecialization(drregisterInfo.getSpecialization());
-        dr_repo.save(doctor);
+        doctorRepo.save(doctor);
         return "Registered";
     }
 
     public String updateUserInfo(UserRegister updateUser) {
-        if (repo.existsById(updateUser.getId())) {
-            repo.save(updateUser);
+        if (userRepository.existsById(updateUser.getId())) {
+            userRepository.save(updateUser);
             return "User updated successfully";
         }
         return "User not found";
     }
 
     public String updateDoctor(DoctorEntity updatedDoctor) {
-        if (dr_repo.existsById(updatedDoctor.getId())) {
-            dr_repo.save(updatedDoctor);
+        if (doctorRepo.existsById(updatedDoctor.getId())) {
+            doctorRepo.save(updatedDoctor);
             return "Doctor updated successfully";
         }
         return "Doctor not found";
     }
 
     public String updateTrainer(TrainerEntity updatedTrainer) {
-        if (tr_repo.existsById(updatedTrainer.getId())) {
-            tr_repo.save(updatedTrainer);
+        if (trainerRepo.existsById(updatedTrainer.getId())) {
+            trainerRepo.save(updatedTrainer);
             return "Trainer updated successfully";
         }
         return "Trainer not found";
     }
 
-    public String addTrainer(TrainerEntity tr_registerInfo) {
+    public String addTrainer(TrainerEntity trRegisterInfo) {
         TrainerEntity trainer = new TrainerEntity();
-        trainer.setName(tr_registerInfo.getName());
-        trainer.setPassword(tr_registerInfo.getPassword());
-        trainer.setEmail(tr_registerInfo.getEmail());
-        trainer.setGender(tr_registerInfo.getGender());
-        tr_repo.save(trainer);
+        trainer.setName(trRegisterInfo.getName());
+        trainer.setPassword(trRegisterInfo.getPassword());
+        trainer.setEmail(trRegisterInfo.getEmail());
+        trainer.setGender(trRegisterInfo.getGender());
+        trainerRepo.save(trainer);
         return "Registered";
     }
 
     public DoctorEntity getDoctorProfileByEmail(String email) {
-        return dr_repo.findAllByEmail(email);
+        return doctorRepo.findAllByEmail(email);
     }
 
     public TrainerEntity getTrainerProfileByEmail(String email) {
-        return tr_repo.findTrainersByEmail(email);
+        return trainerRepo.findTrainersByEmail(email);
     }
 
-
     public String checkDoctor(String email, String password) {
-        DoctorEntity user = dr_repo.findAllByEmail(email); // Ensure this method name is correct
-        if (user != null && user.getPassword().equals(password)) {
+        DoctorEntity doctor = doctorRepo.findAllByEmail(email);
+        if (doctor != null && doctor.getPassword().equals(password)) {
             return "Login successful";
         }
         return "Login failed";
@@ -116,8 +118,8 @@ public class UserService {
 
     public String checkTrainer(String email, String password) {
         try {
-            TrainerEntity user = tr_repo.findTrainersByEmail(email); // Make sure this method exists
-            if (user != null && user.getPassword().equals(password)) {
+            TrainerEntity trainer = trainerRepo.findTrainersByEmail(email);
+            if (trainer != null && trainer.getPassword().equals(password)) {
                 return "Login successful";
             }
             return "Login failed";
@@ -127,5 +129,55 @@ public class UserService {
         }
     }
 
-
+    public UserRegister findById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    
+//    public UserDTO convertToDTO(UserRegister user) {
+//        UserDTO dto = new UserDTO();
+//        dto.setId(user.getId());
+//        dto.setFirstname(user.getFirstname());
+//        dto.setEmail(user.getEmail());
+//        dto.setAge(user.getAge());
+//        dto.setHeight(user.getHeight());
+//        dto.setWeight(user.getWeight());
+//        return dto;
+//    }
+//
+//
+//    public UserDTO getUserById(int userId) {
+//        UserRegister user = userRepository.findById(userId)
+//            .orElseThrow(() -> new RuntimeException("User not found"));
+//        return new UserDTO(user);
+//    }
+//
+//    public List<UserDTO> findUsersByIds(List<Long> userIds) {
+//        List<UserRegister> users = userRepository.findAllById(userIds);
+//        return users.stream().map(UserDTO::new).collect(Collectors.toList());
+//    }
+    
+    
+    public Optional<UserRegister> getUserById(int userId) {
+        return userRepository.findById(userId);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
