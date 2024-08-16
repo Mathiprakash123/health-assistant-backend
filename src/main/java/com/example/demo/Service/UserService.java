@@ -3,7 +3,7 @@ package com.example.demo.Service;
 import com.example.demo.Repo.DoctorRepo;
 import com.example.demo.Repo.TrainerRepo;
 import com.example.demo.Repo.UserRepository;
-import com.example.demo.dto.UserDTO;
+// import com.example.demo.dto.UserDTO;
 import com.example.demo.modal.DoctorEntity;
 import com.example.demo.modal.TrainerEntity;
 import com.example.demo.modal.UserRegister;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+// import java.util.stream.Collectors;
 
 @Service
 public class UserService {

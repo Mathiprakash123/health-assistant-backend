@@ -1,7 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Repo.DoctorRepo;
-import com.example.demo.Repo.TrainerRepo;
+// import com.example.demo.Repo.TrainerRepo;
 import com.example.demo.Service.AppointmentService;
 import com.example.demo.Service.UserService;
 import com.example.demo.dto.UserDTO;
@@ -25,8 +25,8 @@ public class UserController {
     @Autowired
     private DoctorRepo doctorRepository;
 
-    @Autowired
-    private TrainerRepo trainerRepo;
+    // @Autowired
+    // private TrainerRepo trainerRepo;
 
     @Autowired
     private AppointmentService appointmentService;
