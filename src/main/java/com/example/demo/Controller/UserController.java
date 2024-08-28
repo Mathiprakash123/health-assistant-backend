@@ -25,8 +25,7 @@ public class UserController {
     @Autowired
     private DoctorRepo doctorRepository;
 
-    // @Autowired
-    // private TrainerRepo trainerRepo;
+
 
     @Autowired
     private AppointmentService appointmentService;

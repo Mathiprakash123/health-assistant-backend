@@ -15,7 +15,14 @@ public class Appointment {
     private int userId;
     private int doctorId;
     private String date;
-    public int getId() {
+	private String status;
+    public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public int getId() {
 		return id;
 	}
 	public void setId(int id) {

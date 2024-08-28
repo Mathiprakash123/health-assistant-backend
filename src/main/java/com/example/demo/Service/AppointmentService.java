@@ -57,15 +57,15 @@ public class AppointmentService {
                            .collect(Collectors.toList());
     }
 
-    private AppointmentDTO convertToDTO(Appointment appointment) {
-        LocalDate date = parseDate(appointment.getDate());
-        LocalTime time = parseTime(appointment.getTime());
-        return new AppointmentDTO(appointment.getId(), 
-                                  appointment.getUserId(), 
-                                  appointment.getDoctorId(), 
-                                  date, 
-                                  time);
-    }
+    // private AppointmentDTO convertToDTO(Appointment appointment) {
+    //     LocalDate date = parseDate(appointment.getDate());
+    //     LocalTime time = parseTime(appointment.getTime());
+    //     return new AppointmentDTO(appointment.getId(), 
+    //                               appointment.getUserId(), 
+    //                               appointment.getDoctorId(), 
+    //                               date, 
+    //                               time);
+    // }
 
     private LocalDate parseDate(String dateString) {
         try {
@@ -97,4 +97,47 @@ public class AppointmentService {
             return null;
         }
     }
+    public void updateAppointmentStatus(Integer id, String status) {
+        Appointment appointment = findById(id);
+        if (appointment != null) {
+            appointment.setStatus(status);
+            save(appointment);
+        }
+    }
+
+
+
+    public Appointment getAppointmentStatus(int appointmentId) {
+        return appointmentRepository.findById(appointmentId).orElse(null);
+    }
+
+    public List<Appointment> findAppointmentsByUserIdAndDoctorId(int userId, int doctorId) {
+        return appointmentRepository.findByUserIdAndDoctorId(userId, doctorId);
+    }
+
+
+    public List<AppointmentDTO> getAppointmentsByUserId(int userId) {
+        List<Appointment> appointments = appointmentRepository.findByUserId(userId);
+        return appointments.stream()
+                           .map(this::convertToDTO)
+                           .collect(Collectors.toList());
+    }
+    
+
+    // @Autowired
+    // private AppointmentRepo appointmentRepo;
+
+    private AppointmentDTO convertToDTO(Appointment appointment) {
+        LocalDate date = parseDate(appointment.getDate());
+        LocalTime time = parseTime(appointment.getTime());
+        return new AppointmentDTO(
+            appointment.getId(),
+            appointment.getUserId(),
+            appointment.getDoctorId(),
+            date,
+            time,
+            appointment.getStatus() // Ensure status ais included in the DTO
+        );
+    }
+    
 }
