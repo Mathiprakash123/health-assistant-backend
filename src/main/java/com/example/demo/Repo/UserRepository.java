@@ -19,10 +19,10 @@ public interface UserRepository extends JpaRepository<UserRegister, Integer> {
 
 	UserRegister findAllByEmail(String email);
 
-	// List<UserRegister> findAllById(List<Long> userIds);
-    Optional<UserRegister> findById(Integer userId);
+	// // List<UserRegister> findAllById(List<Long> userIds);
+    // Optional<UserRegister> findById(Integer userId);
 
-    // Use List<Long> if IDs are Long
-    List<UserRegister> findAllById(Iterable<Integer> ids);
-    Optional<UserRegister> findById(int id);
+    // // Use List<Long> if IDs are Long
+    // List<UserRegister> findAllById(Iterable<Integer> ids);
+    // Optional<UserRegister> findById(int id);
 }
