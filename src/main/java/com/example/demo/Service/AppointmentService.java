@@ -60,10 +60,10 @@ public class AppointmentService {
     // private AppointmentDTO convertToDTO(Appointment appointment) {
     //     LocalDate date = parseDate(appointment.getDate());
     //     LocalTime time = parseTime(appointment.getTime());
-    //     return new AppointmentDTO(appointment.getId(), 
-    //                               appointment.getUserId(), 
-    //                               appointment.getDoctorId(), 
-    //                               date, 
+    //     return new AppointmentDTO(appointment.getId(),
+    //                               appointment.getUserId(),
+    //                               appointment.getDoctorId(),
+    //                               date,
     //                               time);
     // }
 
@@ -122,7 +122,7 @@ public class AppointmentService {
                            .map(this::convertToDTO)
                            .collect(Collectors.toList());
     }
-    
+
 
     // @Autowired
     // private AppointmentRepo appointmentRepo;
@@ -139,5 +139,5 @@ public class AppointmentService {
             appointment.getStatus() // Ensure status ais included in the DTO
         );
     }
-    
+
 }
