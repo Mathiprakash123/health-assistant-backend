@@ -8,8 +8,14 @@ import com.example.demo.modal.DoctorEntity;
 import com.example.demo.modal.TrainerEntity;
 import com.example.demo.modal.UserRegister;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 // import java.util.stream.Collectors;
@@ -64,6 +70,27 @@ public class UserService {
         doctor.setSpecialization(drregisterInfo.getSpecialization());
         doctorRepo.save(doctor);
         return "Registered";
+    }
+
+    @Value("${upload.dir}")
+    private String uploadDir; // Directory where you want to save the uploaded files
+
+    public String uploadImage(MultipartFile file, String email) throws IOException {
+        // Create directory if it doesn't exist
+        File dir = new File(uploadDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        // Define the file path based on the email or a unique identifier
+        String fileName = email + "_profile_image_" + file.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir, fileName);
+
+        // Save the file to the directory
+        file.transferTo(filePath);
+
+        // Return the file URL (This could be a local URL or cloud storage URL)
+        return "http://localhost:8080/images/" + fileName;
     }
 
     public String updateUserInfo(UserRegister updateUser) {
@@ -133,38 +160,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-//    
-//    public UserDTO convertToDTO(UserRegister user) {
-//        UserDTO dto = new UserDTO();
-//        dto.setId(user.getId());
-//        dto.setFirstname(user.getFirstname());
-//        dto.setEmail(user.getEmail());
-//        dto.setAge(user.getAge());
-//        dto.setHeight(user.getHeight());
-//        dto.setWeight(user.getWeight());
-//        return dto;
-//    }
-//
-//
-//    public UserDTO getUserById(int userId) {
-//        UserRegister user = userRepository.findById(userId)
-//            .orElseThrow(() -> new RuntimeException("User not found"));
-//        return new UserDTO(user);
-//    }
-//
-//    public List<UserDTO> findUsersByIds(List<Long> userIds) {
-//        List<UserRegister> users = userRepository.findAllById(userIds);
-//        return users.stream().map(UserDTO::new).collect(Collectors.toList());
-//    }
-    
+ 
     
     public Optional<UserRegister> getUserById(int userId) {
         return userRepository.findById(userId);

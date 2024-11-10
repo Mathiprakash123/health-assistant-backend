@@ -140,4 +140,8 @@ public class AppointmentService {
         );
     }
 
+    public List<Appointment> getAppointmentsByUserId(Long userId) {
+        return appointmentRepository.findByUserId(userId); // Retrieve all appointments by userId
+    }
+
 }

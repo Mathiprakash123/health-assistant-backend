@@ -3,6 +3,7 @@ package com.example.demo.Controller;
 import com.example.demo.Repo.DoctorRepo;
 // import com.example.demo.Repo.TrainerRepo;
 import com.example.demo.Service.AppointmentService;
+import com.example.demo.Service.ImageUploadService;
 import com.example.demo.Service.UserService;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.modal.DoctorEntity;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,9 +26,8 @@ public class UserController {
 
     @Autowired
     private DoctorRepo doctorRepository;
-
-
-
+    @Autowired
+    private ImageUploadService imageUploadService;
     @Autowired
     private AppointmentService appointmentService;
 
@@ -55,6 +56,21 @@ public class UserController {
         return userService.getUserProfileByEmail(email);
     }
 
+
+    @PostMapping("/upload_image")
+    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file, 
+                                         @RequestParam("email") String email) {
+        try {
+            String imageUrl = imageUploadService.uploadImage(file, email);
+            return ResponseEntity.ok().body("{\"imageUrl\":\"" + imageUrl + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("{\"message\":\"Failed to upload image\"}");
+        }
+    }
+
+
+    
+
     @PutMapping("/update_user")
     public ResponseEntity<String> updateUserProfile(@RequestBody UserRegister updateUser) {
         return ResponseEntity.ok(userService.updateUserInfo(updateUser));
@@ -75,9 +91,10 @@ public class UserController {
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Login failed", null));
             }
-        } catch (Exception e) {
+        } catch (Exception e) { 
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponse("An error occurred", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new LoginResponse("An error occurred", null));
         }
     }
 
@@ -136,7 +153,8 @@ public class UserController {
             }
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponse("An error occurred", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new LoginResponse("An error occurred", null));
         }
     }
 

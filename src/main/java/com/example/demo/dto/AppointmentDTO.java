@@ -12,7 +12,8 @@ public class AppointmentDTO {
     private String status; // Ensure this field exists if you're using it
 
     // Default constructor
-    public AppointmentDTO() {}
+    public AppointmentDTO() {
+    }
 
     // Constructor with parameters
     public AppointmentDTO(Integer id, Integer userId, Integer doctorId, LocalDate date, LocalTime time, String status) {
@@ -25,20 +26,55 @@ public class AppointmentDTO {
     }
 
     public AppointmentDTO(int id2, int userId2, int doctorId2, LocalDate date2, LocalTime time2) {
-        //TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
     }
 
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
-    public Integer getDoctorId() { return doctorId; }
-    public void setDoctorId(Integer doctorId) { this.doctorId = doctorId; }
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
-    public LocalTime getTime() { return time; }
-    public void setTime(LocalTime time) { this.time = time; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Integer doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

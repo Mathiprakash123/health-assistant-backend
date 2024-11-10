@@ -1,7 +1,5 @@
 package com.example.demo.modal;
 
-
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

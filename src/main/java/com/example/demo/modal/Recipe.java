@@ -1,6 +1,5 @@
 package com.example.demo.modal;
 
-
 import java.util.List;
 
 import jakarta.persistence.ElementCollection;
