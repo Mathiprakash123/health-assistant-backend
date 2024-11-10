@@ -15,7 +15,6 @@ public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String img;
     private String nutritionType;
     private String noOfRecipes;
